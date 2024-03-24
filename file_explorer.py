@@ -9,7 +9,7 @@ from math import ceil
 import tktooltip as tip
 
 def init(win: Frame, file_menu: Menu):
-
+    
     def getFormatIconType(format: str) -> str:
         if format in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'ico']:
             return 'image'
