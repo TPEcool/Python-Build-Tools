@@ -8,8 +8,8 @@ from tkinter.filedialog import askopenfilename, askdirectory, asksaveasfilename
 from math import ceil
 import tktooltip as tip
 
-def init(win: Frame, file_menu: Menu):
-    
+def init(win: Frame, file_menu: Menu):#, file_options: Labelframe):
+
     def getFormatIconType(format: str) -> str:
         if format in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'ico']:
             return 'image'
@@ -120,7 +120,21 @@ def init(win: Frame, file_menu: Menu):
     selfile = StringVar(win, '')
 
     global ITEMS_PER_ROW
-    ITEMS_PER_ROW = 9
+    ITEMS_PER_ROW = 5
+    
+    global CHARACTERS_PER_LINE
+    CHARACTERS_PER_LINE = 16
+    
+    def insertlinebreaks(s: str, x: int) -> str:
+        '''
+        Insert linebreaks into `s` at every `x` characters.
+        '''
+        result = ""
+        for i in range(0, len(s), x):
+            result += s[i:i+x] + '\n'
+        return result
+    
+    split_objname = lambda s: insertlinebreaks(s, CHARACTERS_PER_LINE)
 
     class Directory:
         def __init__(self, files: list[str], dirs: list[str], location: str):
@@ -139,7 +153,7 @@ def init(win: Frame, file_menu: Menu):
                 row, column = divmod(i, ITEMS_PER_ROW)
                 def opencmd(dir_: str):
                     changedir(dir_)
-                btn = Button(fram, text=obj, image=ICONS['folder' + ('' if self.location + '/' + obj in list(bundle.getDir().keys()) else '_empty')], style=(DARK), compound=TOP, command=lambda dir_=self.location + '/' + obj, opencmd=opencmd: opencmd(dir_))
+                btn = Button(fram, text=split_objname(obj), image=ICONS['folder' + ('' if self.location + '/' + obj in list(bundle.getDir().keys()) else '_empty')], style=(DARK), compound=TOP, command=lambda dir_=self.location + '/' + obj, opencmd=opencmd: opencmd(dir_))
                 del opencmd
                 btn.grid(row=row, column=column, padx=5, pady=5)
 
@@ -150,7 +164,7 @@ def init(win: Frame, file_menu: Menu):
                 def opencmd(path: str):
                     selfile.set(path)
                     updateselfile()
-                btn = Button(fram, text=file, compound=TOP, style=(DARK), image=getFileIcon(self.location + '/' + file), command=lambda path=self.location + '/' + file, opencmd=opencmd: opencmd(path))
+                btn = Button(fram, text=split_objname(file), compound=TOP, style=(DARK), image=getFileIcon(self.location + '/' + file), command=lambda path=self.location + '/' + file, opencmd=opencmd: opencmd(path))
                 del opencmd
                 btn.grid(row=row, column=column, padx=5, pady=5)
 
@@ -165,7 +179,7 @@ def init(win: Frame, file_menu: Menu):
                 row, column = divmod(i, ITEMS_PER_ROW)
                 def opencmd(dir_: str):
                     changedir(dir_)
-                btn = Button(fram, text=obj, image=ICONS['folder' + ('' if self.location + '/' + obj in list(bundle.getDir().keys()) else '_empty')], style=(LIGHT), compound=TOP, command=lambda dir_=self.location + '/' + obj, opencmd=opencmd: opencmd(dir_))
+                btn = Button(fram, text=obj, image=ICONS['folder' + ('' if self.location + '/' + obj in list(bundle.getDir().keys()) else '_empty')], style=DARK, compound=TOP, command=lambda dir_=self.location + '/' + obj, opencmd=opencmd: opencmd(dir_))
                 del opencmd
                 btn.grid(row=row, column=column, padx=5, pady=5)
 
@@ -182,7 +196,7 @@ def init(win: Frame, file_menu: Menu):
 
                 searchicons[self.location + '/' + file] = _itk
 
-                btn = Button(fram, text=file, compound=TOP, style=(LIGHT), image=searchicons[self.location + '/' + file], command=lambda path=self.location + '/' + file, opencmd=opencmd: opencmd(path))
+                btn = Button(fram, text=file, compound=TOP, style=DARK, image=searchicons[self.location + '/' + file], command=lambda path=self.location + '/' + file, opencmd=opencmd: opencmd(path))
                 del opencmd
                 btn.grid(row=row, column=column, padx=5, pady=5)
 
